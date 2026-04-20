@@ -1,6 +1,6 @@
 {
   "name": "codelore",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Skills for critically exploring and documenting code. exploratory-qa surfaces non-obvious decisions in a feature; document-feature captures how and why a feature works for future maintainers.",
   "author": {
     "name": "Andrii",

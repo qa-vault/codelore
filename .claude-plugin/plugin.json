@@ -1,0 +1,12 @@
+{
+  "name": "codelore",
+  "version": "0.1.0",
+  "description": "Skills for critically exploring and documenting code. exploratory-qa surfaces non-obvious decisions in a feature; document-feature captures how and why a feature works for future maintainers.",
+  "author": {
+    "name": "Andrii",
+    "email": "andreylisenko04@gmail.com"
+  },
+  "keywords": ["qa", "documentation", "code-review", "exploration", "onboarding"],
+  "license": "MIT",
+  "repository": "https://github.com/qa-vault/codelore"
+}

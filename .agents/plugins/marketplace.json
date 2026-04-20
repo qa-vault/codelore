@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    {
+      "source": { "source": "local", "path": "../../" },
+      "interface": { "displayName": "codelore" }
+    }
+  ]
+}

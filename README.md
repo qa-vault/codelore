@@ -40,7 +40,7 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
    - **Project** — only active when you open this project, and shared with teammates via `.claude/settings.json`
    - **Local** — only for you, only in this project
 
-3. **Verify** — type `/` and you should see `/codelore:exploratory-qa` and `/codelore:document-feature` in the list.
+3. **Verify** — type `/` and you should see `/exploratory-qa` and `/document-feature` in the list (each annotated `(codelore)` so you can tell where they come from).
 
 **Updates:** Claude Code auto-updates installed plugins at startup. Nothing to do on your side.
 
@@ -80,11 +80,11 @@ Once installed, you don't need to invoke them explicitly — both skills trigger
 | `exploratory-qa` | Plan | "QA this plan: plans/rate-limiting.md", "Critique this spec before I implement it", "Review this design doc with a skeptical eye", "What's missing from this RFC?" |
 | `document-feature` | — | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
 
-In Claude Code you can also call them by explicit name:
+In Claude Code you can also call them by explicit slash command:
 
 ```
-/codelore:exploratory-qa the notification service
-/codelore:document-feature
+/exploratory-qa the notification service
+/document-feature
 ```
 
 ---

@@ -2,10 +2,12 @@
 
 Two skills that help you **build and preserve understanding of a codebase**:
 
-- **`exploratory-qa`** — a skeptical reviewer that reads a feature and surfaces non-obvious decisions, unusual implementations, and architectural choices worth discussing. Not a linter or bug finder — a thinking agent that asks _"why?"_
+- **`exploratory-qa`** — a skeptical reviewer that examines **existing code OR an implementation plan** and surfaces non-obvious decisions, unusual implementations, and architectural choices worth discussing. Not a linter or bug finder — a thinking agent that asks _"why?"_ Works in two modes:
+  - **Code mode** — review an already-implemented feature, module, or file.
+  - **Plan mode** — pressure-test an implementation plan, spec, design doc, or RFC **before** code is written. Plans are the cheapest place to catch issues.
 - **`document-feature`** — creates and maintains living reference docs that explain how a feature works, why it was built that way, and what to watch out for when modifying it.
 
-Use them when onboarding to unfamiliar code, critically reviewing a module, or wrapping up a feature that deserves documentation.
+Use them when onboarding to unfamiliar code, critically reviewing a module, pressure-testing a design before implementation, or wrapping up a feature that deserves documentation.
 
 This plugin installs natively in both **Claude Code** and **Codex CLI**.
 
@@ -70,10 +72,11 @@ Codex also has a plugin marketplace system (since March 2026). The install flow 
 
 Once installed, you don't need to invoke them explicitly — both skills trigger automatically on natural phrases:
 
-| Skill | Example prompts |
-|---|---|
-| `exploratory-qa` | "Explore the checkout flow", "QA this module critically", "Review src/auth/ with a skeptical eye", "What's non-obvious here?" |
-| `document-feature` | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
+| Skill | Mode | Example prompts |
+|---|---|---|
+| `exploratory-qa` | Code | "Explore the checkout flow", "QA this module critically", "Review src/auth/ with a skeptical eye", "What's non-obvious here?" |
+| `exploratory-qa` | Plan | "QA this plan: plans/rate-limiting.md", "Critique this spec before I implement it", "Review this design doc with a skeptical eye", "What's missing from this RFC?" |
+| `document-feature` | — | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
 
 In Claude Code you can also call them by explicit name:
 

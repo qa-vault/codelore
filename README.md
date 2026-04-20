@@ -46,12 +46,12 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
 
 ### Codex CLI
 
-Codex also has a plugin marketplace system (since March 2026), but with a different distribution model than Claude Code — each plugin repo is its own marketplace. So you add the `codelore` repo directly (not the `qa-vault/marketplace` catalog repo, which is Claude-Code-only).
+Codex also has a plugin marketplace system (since March 2026). The install flow mirrors Claude Code's.
 
-1. **Add this plugin's marketplace** (one-time):
+1. **Add the marketplace** (one-time):
 
    ```
-   codex marketplace add qa-vault/codelore
+   codex marketplace add qa-vault/marketplace
    ```
 
 2. **Install the plugin**:
@@ -64,9 +64,7 @@ Codex also has a plugin marketplace system (since March 2026), but with a differ
 
 3. **Verify** — Codex will auto-detect the skills. You can trigger them with natural phrases (see "Using the skills" below).
 
-**Updates:** refresh with `codex marketplace update codelore` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
-
-> **Note:** To install other `qa-vault` plugins in Codex, repeat `codex marketplace add qa-vault/<plugin-name>` for each one. Codex's marketplace format doesn't support a single catalog that lists plugins across multiple repos the way Claude Code's does.
+**Updates:** refresh with `codex marketplace update qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
 
 ---
 

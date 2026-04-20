@@ -1,14 +1,13 @@
 # Agent Context: codelore
 
-This repository is a **dual-ecosystem plugin** — installable natively in both Claude Code and Codex CLI. When working on this codebase, keep both ecosystems in sync.
+This repository is a **dual-ecosystem plugin** — installable natively in both Claude Code and Codex CLI via the `qa-vault/marketplace` catalog. When working on this codebase, keep both ecosystems in sync.
 
 ## Repository layout
 
 ```
 codelore/
-├── .claude-plugin/plugin.json         # Claude Code manifest
-├── .codex-plugin/plugin.json          # Codex manifest
-├── .agents/plugins/marketplace.json   # Codex per-plugin marketplace (self-reference)
+├── .claude-plugin/plugin.json     # Claude Code manifest
+├── .codex-plugin/plugin.json      # Codex manifest
 ├── skills/
 │   ├── exploratory-qa/SKILL.md
 │   └── document-feature/
@@ -16,18 +15,19 @@ codelore/
 │       └── references/doc_template.md
 ├── README.md
 ├── LICENSE
-└── AGENTS.md                           # this file
+└── AGENTS.md                       # this file
 ```
 
 The `skills/` directory is the **single source of truth** for skill content. Both manifests reference it — never duplicate skill files.
 
-## Why there's a marketplace.json inside this plugin repo
+## Distribution model
 
-Codex's marketplace format only supports `source: "local"` — it cannot reference plugins from external repos. So for Codex, **each plugin repo must be its own marketplace**, with a local source pointing back at itself. The `.agents/plugins/marketplace.json` file in this repo declares a single plugin (this one) at `path: "../../"` (repo root, where `.codex-plugin/` lives).
+Both ecosystems pull this plugin from the `qa-vault/marketplace` catalog repo:
 
-Claude Code doesn't have this limitation — it uses the separate `qa-vault/marketplace` repo as a catalog that points at this plugin repo remotely.
+- **Claude Code** marketplace entry uses `source: "github"` with `repo: "qa-vault/codelore"`.
+- **Codex** marketplace entry uses `source: "url"` with `url: "qa-vault/codelore"` (GitHub shorthand accepted).
 
-The consequence: Codex users must run `codex marketplace add qa-vault/codelore` directly, not via the `qa-vault/marketplace` catalog. This asymmetry is documented in the README.
+Codex's marketplace schema lives in the Rust source at `codex-rs/core-plugins/src/marketplace.rs` in [openai/codex](https://github.com/openai/codex). Reference it when uncertain about supported variants.
 
 ## Cross-platform invariants
 
@@ -38,7 +38,6 @@ These rules must hold at all times. Breaking any of them ships a broken release.
 3. **`SKILL.md` frontmatter** must include `name` and `description` at minimum — these are the only fields Codex requires, and Claude Code accepts extras without complaint.
 4. **Never add a skill to just one ecosystem.** All skills live under `skills/<name>/` and are auto-discovered by both tools.
 5. **Don't hard-code tool-specific paths** inside `SKILL.md`. Skill content must be written in a way that works in either runtime.
-6. **The `.agents/plugins/marketplace.json` `path` field must remain `../../`** (relative path from the marketplace file to the plugin root). Changing the repo's internal layout may require adjusting this.
 
 ## Adding a new skill
 
@@ -72,13 +71,11 @@ git tag v<X.Y.Z>
 git push && git push --tags
 ```
 
-Both Claude Code and Codex clients pick up the new version from the tag (Claude Code auto-updates on startup; Codex behavior on auto-update is undocumented as of this writing — users may need to run `codex marketplace update codelore` manually).
+Both Claude Code and Codex clients pick up the new version via the `qa-vault/marketplace` catalog. Claude Code auto-updates on startup; Codex behavior on auto-update is undocumented — users may need to run `codex marketplace update qa-vault` manually.
 
-## Companion marketplace (Claude Code only)
+## Companion marketplace
 
-This plugin is listed in the `qa-vault/marketplace` catalog repo for Claude Code users. When renaming the plugin or changing the GitHub repo path, update the entry in that repo's `.claude-plugin/marketplace.json`.
-
-The `qa-vault/marketplace` repo does NOT contain a Codex marketplace file — Codex distribution happens per-plugin via this repo's own `.agents/plugins/marketplace.json`.
+This plugin is listed in the `qa-vault/marketplace` catalog repo — listed in BOTH the Claude Code manifest (`.claude-plugin/marketplace.json`) and the Codex manifest (`.agents/plugins/marketplace.json`) there. When renaming this plugin or changing its GitHub repo path, update both entries in the marketplace repo.
 
 ## What this plugin does NOT contain
 

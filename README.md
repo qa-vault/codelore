@@ -48,6 +48,8 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
 
 Codex also has a plugin marketplace system (since March 2026). The install flow mirrors Claude Code's.
 
+> **Requires Codex CLI 0.122+.** Stable 0.121.x accepts only `local` plugin sources in marketplaces, which blocks polyrepo catalogs like this one. The `url` source variant used here lands in 0.122 (currently pre-release). If you're on 0.121.x, either wait for 0.122 stable, install the pre-release (`npm install -g @openai/codex@next`), or copy the skills manually to `~/.codex/skills/`.
+
 1. **Add the marketplace** (one-time):
 
    ```

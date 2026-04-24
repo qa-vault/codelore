@@ -48,25 +48,27 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
 
 Codex also has a plugin marketplace system (since March 2026). The install flow mirrors Claude Code's.
 
-> **Requires Codex CLI 0.122+.** Stable 0.121.x accepts only `local` plugin sources in marketplaces, which blocks polyrepo catalogs like this one. The `url` source variant used here lands in 0.122 (currently pre-release). If you're on 0.121.x, either wait for 0.122 stable, install the pre-release (`npm install -g @openai/codex@next`), or copy the skills manually to `~/.codex/skills/`.
+> **Requires Codex CLI 0.122+.** The `url` source variant used here shipped in stable 0.122 (2026-04-20). Earlier 0.121.x releases accept only `local` plugin sources and cannot install polyrepo catalogs like this one — upgrade to 0.122 or later.
 
 1. **Add the marketplace** (one-time):
 
    ```
-   codex marketplace add qa-vault/marketplace
+   codex plugin marketplace add qa-vault/marketplace
    ```
 
 2. **Install the plugin**:
 
+   Inside Codex, open the plugin browser:
+
    ```
-   /plugins install codelore
+   /plugins
    ```
 
-   (Run inside Codex. You can also browse via the `/plugins` command.)
+   Find `codelore` under the `qa-vault` marketplace and toggle it on to install. (`/plugins` is an interactive browser — it does not accept inline arguments.)
 
 3. **Verify** — Codex will auto-detect the skills. You can trigger them with natural phrases (see "Using the skills" below).
 
-**Updates:** refresh with `codex marketplace update qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
+**Updates:** refresh with `codex plugin marketplace upgrade qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
 
 ---
 

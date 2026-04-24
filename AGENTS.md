@@ -71,7 +71,7 @@ git tag v<X.Y.Z>
 git push && git push --tags
 ```
 
-Both Claude Code and Codex clients pick up the new version via the `qa-vault/marketplace` catalog. Claude Code auto-updates on startup; Codex behavior on auto-update is undocumented — users may need to run `codex marketplace update qa-vault` manually.
+Both Claude Code and Codex clients pick up the new version via the `qa-vault/marketplace` catalog. Claude Code auto-updates on startup; Codex behavior on auto-update is undocumented — users may need to run `codex plugin marketplace upgrade qa-vault` manually.
 
 ## Companion marketplace
 

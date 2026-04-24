@@ -11,11 +11,23 @@ Use them when onboarding to unfamiliar code, critically reviewing a module, pres
 
 This plugin installs natively in both **Claude Code** and **Codex CLI**.
 
+## Contents
+
+- [Install](#install)
+  - [Claude Code](#claude-code)
+  - [Codex CLI](#codex-cli)
+- [Using the skills](#using-the-skills)
+- [License](#license)
+
 ---
+
+<img src="https://img.shields.io/badge/Install-2ea043?style=for-the-badge" alt="Install" />
 
 ## Install
 
 Pick the section matching your AI coding tool.
+
+<img src="https://img.shields.io/badge/Claude_Code-cc785c?style=for-the-badge" alt="Claude Code" />
 
 ### Claude Code
 
@@ -44,6 +56,8 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
 
 **Updates:** Claude Code auto-updates installed plugins at startup. Nothing to do on your side.
 
+<img src="https://img.shields.io/badge/Codex_CLI-1f2328?style=for-the-badge" alt="Codex CLI" />
+
 ### Codex CLI
 
 Codex also has a plugin marketplace system (since March 2026). The install flow mirrors Claude Code's.
@@ -71,6 +85,8 @@ Codex also has a plugin marketplace system (since March 2026). The install flow 
 **Updates:** refresh with `codex plugin marketplace upgrade qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
 
 ---
+
+<img src="https://img.shields.io/badge/Using_the_skills-0969da?style=for-the-badge" alt="Using the skills" />
 
 ## Using the skills
 
@@ -101,6 +117,8 @@ Two ways to invoke each skill — explicit is recommended.
 | `document-feature` | — | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
 
 ---
+
+<img src="https://img.shields.io/badge/License-6e7781?style=for-the-badge" alt="License" />
 
 ## License
 

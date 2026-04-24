@@ -66,7 +66,7 @@ Codex also has a plugin marketplace system (since March 2026). The install flow 
 
    Find `codelore` under the `qa-vault` marketplace and toggle it on to install. (`/plugins` is an interactive browser — it does not accept inline arguments.)
 
-3. **Verify** — Codex will auto-detect the skills. You can trigger them with natural phrases (see "Using the skills" below).
+3. **Verify** — type `$` in the Codex composer to open the skill-mention popup; `exploratory-qa` and `document-feature` should be listed. Invoke a skill explicitly with `$exploratory-qa <your request>` or `$document-feature <your request>`. As a fallback, Codex will auto-detect a skill when your prompt matches its `description` (see "Using the skills" below for example phrases).
 
 **Updates:** refresh with `codex plugin marketplace upgrade qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
 
@@ -74,20 +74,31 @@ Codex also has a plugin marketplace system (since March 2026). The install flow 
 
 ## Using the skills
 
-Once installed, you don't need to invoke them explicitly — both skills trigger automatically on natural phrases:
+Two ways to invoke each skill — explicit is recommended.
+
+**1. Explicit mention (recommended).**
+
+- In **Codex**, type `$` in the composer to open the skill-mention popup, then select the skill and add your request:
+
+  ```
+  $exploratory-qa the notification service
+  $document-feature
+  ```
+
+- In **Claude Code**, call them by slash command:
+
+  ```
+  /exploratory-qa the notification service
+  /document-feature
+  ```
+
+**2. Auto-detect (fallback).** If you don't mention the skill explicitly, both Claude Code and Codex will pick one when your prompt matches the skill's `description`. Useful phrases:
 
 | Skill | Mode | Example prompts |
 |---|---|---|
 | `exploratory-qa` | Code | "Explore the checkout flow", "QA this module critically", "Review src/auth/ with a skeptical eye", "What's non-obvious here?" |
 | `exploratory-qa` | Plan | "QA this plan: plans/rate-limiting.md", "Critique this spec before I implement it", "Review this design doc with a skeptical eye", "What's missing from this RFC?" |
 | `document-feature` | — | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
-
-In Claude Code you can also call them by explicit slash command:
-
-```
-/exploratory-qa the notification service
-/document-feature
-```
 
 ---
 

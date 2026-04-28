@@ -39,6 +39,7 @@ The target is an implementation plan, spec, design doc, RFC, or proposal — som
 Plans are the cheapest place to catch issues — treat plan-mode review as seriously as code review. Use plan mode when the target is a plan file (e.g., `plans/*.md`), a pasted spec, a design document, or any description of proposed work that has not yet been implemented.
 
 Adjustments in plan mode:
+- **Phase 0 (Doc consult)** treats any loaded impl docs as the project's *constraint set*: check whether the proposed plan violates a documented trade-off, assumes something the docs say isn't true, or duplicates existing functionality the docs describe.
 - **Phase 1 (Mapping)** maps the *proposed* components, data flow, and boundaries from the plan text, not from code.
 - **Phase 4 (Investigation)** skips git history and instead cross-references the plan against the existing codebase and related documents.
 - **Location format** uses `plan.md:L10-L25` or `plan.md#section-name` for findings.
@@ -55,7 +56,23 @@ If the user's description is vague, ask ONE clarifying question to narrow scope.
 
 ## Exploration Process
 
-You MUST follow these phases sequentially. Do not skip phases. Do not jump to conclusions before completing investigation.
+You MUST follow these phases sequentially. Do not skip phases (with the single exception noted in Phase 0). Do not jump to conclusions before completing investigation.
+
+### Phase 0 — Consult Project Documentation Index
+
+Before mapping, check whether the project has codelore-style implementation documentation indexed at `docs/INDEX.md` (also check one level deeper for monorepos, e.g. `packages/*/docs/INDEX.md`).
+
+- **No `INDEX.md` found** → silently skip this phase and proceed to Phase 1. Do not pause to nudge migration; the router skill (`consulting-project-docs`) handles that elsewhere. Missing infrastructure must never block QA.
+- **`INDEX.md` found** → read it, then load the impl docs whose `description` (or `triggers`) match the target being QA'd. Reuse the dispatch heuristics from `consulting-project-docs`: match on the noun/module the user named, expand one level via the `related` field of each loaded doc, cap at 3–5 docs total. If you'd load more, ask the user which area to focus on.
+
+Loaded docs are **additional context, not authority**. They are typically AI-authored and may themselves be wrong, outdated, or aspirational. Their role is to:
+
+- Give you more material to question. Claims a doc makes about behavior ("uses HS256", "token store is in-memory", "rate limiting is per-process") are *hypotheses* you verify against the code, not facts.
+- Surface **doc/code drift** as findings — see Lens 4 (Domain Logic Fidelity).
+
+Loaded docs do NOT suppress findings. A documented design choice still gets flagged if a senior engineer would stop and ask "wait, why is it done this way?" — the documentation just becomes part of the **Evidence** section, exactly the way comments do (see "Comments are context, not absolution" in Behavioral Rules).
+
+Never load anything from `docs/plans/`, `plans/`, or `specs/`. Those are pre-implementation proposals, not reference docs about the code under review.
 
 ### Phase 1 — Mapping
 
@@ -142,6 +159,7 @@ Flag:
 - Domain terms used inconsistently (same concept called different things in different places, or same name meaning different things)
 - Temporal coupling — operations that must happen in a specific order but nothing enforces it
 - Business rules implemented through technical mechanisms rather than explicit domain logic (e.g., using database constraints as the sole enforcement of a business rule)
+- **Doc/code drift** — an impl doc loaded in Phase 0 makes a claim about behavior that the code contradicts (e.g., the doc says "token store is in-memory" but the code now uses Redis; the doc says "rate limiting is per-process" but the code reads limits from a shared store). The finding is not "the code is wrong" — it's that one of the two sources is now stale, and the team should be told which. Frame the question to surface that ambiguity, not to assume.
 
 ---
 
@@ -192,6 +210,7 @@ For EACH finding from Phases 2 and 3, actively investigate before including it i
 2. **Related specs and ADRs** — search for earlier plans, design docs, or architecture decision records that might constrain or contradict this one.
 3. **Adjacent features** — examine how similar features in the codebase handle the same concerns. Does the plan diverge, and if so, is the divergence justified?
 4. **Unstated assumptions** — flag assumptions the plan relies on but doesn't explicitly name (e.g., "assumes downstream service is available", "assumes single-instance deployment").
+5. **Plan vs. loaded impl docs** — if Phase 0 loaded any docs, walk through each and check whether the plan respects its constraints. Flag conflicts: trade-offs the plan would invalidate, assumptions the plan makes that the docs contradict, functionality the plan proposes that the docs say already exists. Treat the docs as hypotheses (they may be stale) — if the plan and a doc disagree, the finding is "these two sources need reconciling," not "the plan is wrong."
 
 Include what you found in the finding's **Evidence** section. If investigation resolves the concern (e.g., you found an ADR that fully explains the decision), still include the finding but lower its confidence and note the evidence.
 

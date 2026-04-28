@@ -72,6 +72,52 @@ or naming convention, carry that forward.
 Default location: `docs/` at project root.
 Default naming: `kebab-case.md` (e.g., `auth-module.md`, `payment-processing.md`).
 
+### Out of Scope: Implementation Plans
+
+This skill produces *implementation documentation* — reference docs for code that already
+exists. It does NOT produce *implementation plans* (specs/proposals authored before work).
+
+Plans are authored elsewhere and live in their own folders. Treat the following as plan
+folders and exclude them from anything this skill produces:
+
+- `docs/plans/`
+- `plans/`
+- `specs/`
+
+Never write or modify files in these folders. Never include them in `docs/INDEX.md`.
+
+## Frontmatter (Required)
+
+Every implementation doc this skill produces must begin with a YAML frontmatter block.
+The frontmatter is what makes the doc discoverable to AI sessions through the
+`consulting-project-docs` router skill and the `docs/INDEX.md` index.
+
+```yaml
+---
+name: <kebab-case identifier, typically matching the filename without .md>
+description: <one-line hook describing what's in this doc, written for AI triage>
+triggers: [optional list of keywords/verbs that should pull this doc into context]
+related: [optional list of related doc names]
+---
+```
+
+Field rules:
+
+- `name` — required. Kebab-case. Should match the filename stem.
+- `description` — required. One sentence. Write it the way you'd write a `SKILL.md`
+  description: specific, action-oriented, useful for an agent deciding "is this doc
+  relevant to my current task?". Bad: "Auth module docs." Good: "How JWT auth works
+  in this service, including the in-memory token store and the middleware chain that
+  validates each request."
+- `triggers` — optional. List of words or short phrases that should bias the router
+  toward loading this doc. Use sparingly; let `description` do most of the work.
+- `related` — optional. List of other doc names (matching their `name` field) that
+  provide adjacent context.
+
+Legacy docs without frontmatter are tolerated but not first-class — the index regen
+skips them with a warning and surfaces them as candidates for `migrate-project-docs`.
+Never abort an index regen because of a legacy doc.
+
 ## Document Structure
 
 Use this structure as the default when no existing convention is found. If the project
@@ -126,8 +172,10 @@ judgment.
 3. Determine the scope — is this one doc or multiple? A new auth system might warrant one
    doc for the whole module; a large platform might need separate docs per component.
 4. Check if a relevant doc already exists — if so, update it instead of creating a new one.
-5. Write the doc following existing conventions or the default template.
-6. Present a brief summary to the user and offer to adjust.
+5. Write the doc following existing conventions or the default template. Include the
+   required frontmatter (see "Frontmatter" above).
+6. **Regenerate `docs/INDEX.md`** — see "Index Maintenance" below.
+7. Present a brief summary to the user and offer to adjust.
 
 ### Updating an Existing Document
 
@@ -139,10 +187,50 @@ When functionality covered by an existing doc has been changed:
    living documents — they describe how things work *now*, not how they used to work.
    Don't append "Update: we changed X" — just rewrite the section to be accurate.
 4. If the changes are significant enough that trade-offs or constraints have shifted,
-   update those sections too.
+   update those sections too. If the doc's `description` no longer reflects what the
+   doc actually covers, update it too — the index relies on it.
 5. If the scope of the feature has grown such that the existing doc structure doesn't
    fit anymore, restructure it. It's fine to reorganize sections, split a doc into
    multiple docs, or merge docs — as long as the result is clear and accurate.
+6. **Regenerate `docs/INDEX.md`** — see "Index Maintenance" below.
+
+## Index Maintenance
+
+After every doc create or update, regenerate `docs/INDEX.md` so a fresh AI session can
+discover available docs without reading every file.
+
+`docs/INDEX.md` is a flat list of every implementation doc in the project, with each
+entry showing the doc's `name`, its `description`, and a relative link to the file.
+
+### Format
+
+```markdown
+# Project Documentation Index
+
+This file is auto-maintained by the codelore `document-feature` and
+`migrate-project-docs` skills. Do not hand-edit — re-run the appropriate skill instead.
+
+| Name | Description | File |
+|------|-------------|------|
+| auth-module | How JWT auth works in this service, including the in-memory token store and the middleware chain that validates each request. | [auth-module.md](auth-module.md) |
+| payment-processing | End-to-end flow of the Stripe payment integration, including the webhook reconciliation job. | [payment-processing.md](payment-processing.md) |
+```
+
+### Regeneration rules
+
+1. Walk `docs/` for every `.md` file. Skip `INDEX.md` itself, anything under `docs/plans/`,
+   `plans/`, or `specs/`, and any obvious non-doc files (e.g. `README.md` if it's a
+   navigation index rather than a feature doc — use judgment).
+2. For each candidate, parse the YAML frontmatter.
+3. Include docs that have valid `name` and `description`. List them alphabetically by
+   `name`.
+4. **Tolerate legacy docs.** If a candidate has no frontmatter or is missing `name` or
+   `description`, skip it (do not insert a partial row), record it in a "warnings"
+   summary you report back to the user, and suggest running `migrate-project-docs` to
+   migrate them. Never abort the regen.
+5. If `docs/INDEX.md` already exists, overwrite it. The whole file is regenerated — no
+   merging.
+6. If there are zero qualifying docs, do not create an empty `INDEX.md`.
 
 ### Deciding What to Document
 

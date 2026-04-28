@@ -9,6 +9,18 @@ short docs. Complex systems can use all sections and add subsections as needed.
 ## Template
 
 ```markdown
+---
+# Required. Kebab-case identifier. Should match the filename (without .md).
+name: <feature-or-module-name>
+# Required. One-line hook for AI triage. Specific and action-oriented; the router uses
+# this to decide whether to load the doc into the agent's context.
+description: <one sentence describing what this doc covers and why an agent would read it>
+# Optional. Keywords/verbs that should bias the router toward loading this doc.
+# triggers: [auth, login, jwt, session]
+# Optional. Names (matching the `name` field) of related docs.
+# related: [api-gateway, session-store]
+---
+
 # <Feature / Module Name>
 
 ## Overview

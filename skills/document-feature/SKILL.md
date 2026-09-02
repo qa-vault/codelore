@@ -39,6 +39,49 @@ A good implementation doc has these qualities:
 - **Current.** Reflects the code as it exists right now, not a historical record.
 - **Concise.** Covers what matters, skips what doesn't. No padding.
 
+## Never Document the Process
+
+The document describes the system as it is. It never describes the work that produced it.
+Plans live in their own folders (see "Out of Scope: Implementation Plans"), and git holds
+the rest.
+
+Four things leak in most often, and none of them belong:
+
+- **Named in-flight initiatives** — "the migration", "the redesign", "this PR", or a
+  decision ID from a temporary planning document. A reader six months from now has no idea
+  what those refer to, and by then they are over anyway.
+- **The document's own history** — "an earlier draft of this section said...". Nobody is
+  maintaining a document about the document.
+- **The change that produced the current state** — "X used to be three modules", "since
+  the merge", "this was rewritten in". Describe what is, not how it got there.
+- **Roadmap** — "the visual pass is separate work", "temporary until Y ships". It dates
+  the document, and it turns false without anyone editing it.
+
+### The hard case: history that reads like a reason
+
+Sometimes the past *is* the explanation, and cutting it loses real knowledge. The test is
+**who the sentence is addressed to**.
+
+> There is no limit on how far the list pages. An earlier `MAX_LOADED = 200` silently
+> truncated it for the heaviest accounts.
+
+Addressed to the next person tempted to add a cap. Keep it.
+
+> A draft of this change also rendered the banner on the sub-page, and that was wrong.
+
+Addressed to nobody. It records what an author did, not what a maintainer needs.
+
+When history earns its place, it is because it prevents a specific future mistake — so
+write the prevention, not the anecdote. The second example wants to be: "Do not render
+this banner on the sub-page. Nothing there can clear the pending state, and the row it
+warns about arrives on its own."
+
+### Never cite a temporary document
+
+A redesign spec, a migration plan, a scratch folder scheduled for deletion — a reference
+to any of them is a broken link with a date on it, and it breaks inside some unrelated
+change months later. State the fact self-containedly instead.
+
 ## Step 0: Discover Existing Documentation
 
 Before writing anything, scan the project for existing docs. The goal is consistency —

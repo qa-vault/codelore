@@ -5,7 +5,7 @@ Four skills that turn project documentation into a context layer AI sessions con
 - **`document-feature`** — writes and maintains implementation docs with YAML frontmatter (`name`, `description`, `triggers`, `related`) and regenerates `docs/INDEX.md` on every run.
 - **`migrate-project-docs`** — one-shot bulk migration that adds frontmatter to pre-existing docs and bootstraps `docs/INDEX.md`. Idempotent. Skips anything under `docs/plans/`, `plans/`, or `specs/`.
 - **`consulting-project-docs`** — router that reads `docs/INDEX.md` and pulls only the relevant docs into the agent's context whenever you plan, debug, investigate, or onboard. Silent no-op if no index exists.
-- **`exploratory-qa`** — skeptically reviews **existing code OR an implementation plan**, surfacing non-obvious decisions, unusual implementations, and architectural choices worth discussing. Treats loaded docs as more material to question (including surfacing doc/code drift), never as authority. Works in two modes:
+- **`exploratory-qa`** — skeptically reviews **existing code OR an implementation plan**, surfacing non-obvious decisions, unusual implementations, and architectural choices worth discussing. Treats loaded docs as more material to question (including surfacing doc/code drift), never as authority. Resolves purely technical findings itself in the working tree (never commits) and escalates only product-behavior questions to you. Works in two modes:
   - **Code mode** — review an already-implemented feature, module, or file.
   - **Plan mode** — pressure-test an implementation plan, spec, design doc, or RFC **before** code is written. Plans are the cheapest place to catch issues.
 

@@ -9,14 +9,13 @@ codelore/
 ├── .claude-plugin/plugin.json     # Claude Code manifest
 ├── .codex-plugin/plugin.json      # Codex manifest
 ├── skills/
-│   ├── exploratory-qa/SKILL.md
 │   ├── document-feature/
 │   │   ├── SKILL.md
 │   │   └── references/doc_template.md
 │   ├── consulting-project-docs/SKILL.md
 │   └── migrate-project-docs/SKILL.md
 ├── README.md
-├── LICENSE
+├── LICENSE                         # Apache-2.0
 └── AGENTS.md                       # this file
 ```
 
@@ -24,14 +23,13 @@ The `skills/` directory is the **single source of truth** for skill content. Bot
 
 ## Skills overview
 
-The plugin currently ships four skills, all auto-discovered from `skills/`. They are designed to compose into a feedback loop — written docs become indexed, the index gets auto-loaded into AI sessions, and a skeptical reviewer questions both the code and the docs.
+The plugin currently ships three skills, all auto-discovered from `skills/`. They are designed to compose into a feedback loop — written docs become indexed, and the index gets auto-loaded into AI sessions.
 
 - **`document-feature`** — writes and maintains implementation docs with YAML frontmatter (`name`, `description`, optional `triggers`/`related`); regenerates `docs/INDEX.md` after every create or update. Excludes anything under `docs/plans/`, `plans/`, `specs/`.
 - **`migrate-project-docs`** — one-shot bulk migration that adds frontmatter to pre-existing docs and bootstraps `docs/INDEX.md`. Idempotent (re-runs do nothing on a fully migrated tree); skips plan folders; asks the user about ambiguous files before touching them.
 - **`consulting-project-docs`** — router. Reads `docs/INDEX.md` and pulls only relevant docs into the agent's context whenever the user is planning, debugging, investigating, or onboarding. Silent no-op if `docs/INDEX.md` is missing — never blocks, only nudges to run `migrate-project-docs` when appropriate.
-- **`exploratory-qa`** — skeptical reviewer of code or implementation plans. When `docs/INDEX.md` exists, loads relevant docs as additional material to question (not as authority); surfaces doc/code drift under the Domain Logic Fidelity lens; in plan mode, cross-checks plans against loaded docs.
 
-When adding new skills or changing skill behavior, preserve this loop: writing → indexing → routing → critique. See `README.md` for the user-facing description.
+When adding new skills or changing skill behavior, preserve this loop: writing → indexing → routing. See `README.md` for the user-facing description.
 
 ## Distribution model
 

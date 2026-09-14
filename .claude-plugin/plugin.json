@@ -1,12 +1,16 @@
 {
   "name": "codelore",
-  "version": "0.5.0",
-  "description": "Skills for critically exploring and documenting code. exploratory-qa surfaces non-obvious decisions in a feature; document-feature captures how and why a feature works for future maintainers; consulting-project-docs routes existing docs into AI sessions; migrate-project-docs prepares pre-existing docs for that router.",
+  "version": "0.6.0",
+  "description": "Skills that turn project documentation into a context layer AI sessions consult automatically: document-feature captures how and why a feature works for future maintainers; migrate-project-docs prepares pre-existing docs for the router; consulting-project-docs routes the relevant docs into AI sessions when the agent plans, debugs, or onboards.",
   "author": {
     "name": "Andrii",
     "email": "andreylisenko04@gmail.com"
   },
-  "keywords": ["qa", "documentation", "code-review", "exploration", "onboarding"],
-  "license": "MIT",
+  "keywords": [
+    "qa",
+    "documentation",
+    "onboarding"
+  ],
+  "license": "Apache-2.0",
   "repository": "https://github.com/qa-vault/codelore"
 }

@@ -10,9 +10,8 @@ description: >
   `triggers` match the current task into the agent's working context, so the agent
   doesn't plan or fix in the dark. If `docs/INDEX.md` is missing in a project that
   already has `docs/`, suggests running the `migrate-project-docs` skill before
-  continuing. This is NOT for writing docs (that's `document-feature`) and NOT for
-  exploratory critique (that's `exploratory-qa`) — it is for surfacing the right
-  existing docs at the right moment.
+  continuing. This is NOT for writing docs (that's `document-feature`) — it is for
+  surfacing the right existing docs at the right moment.
 ---
 
 # Consulting Project Docs
@@ -98,7 +97,6 @@ request handled by normal file-reading tools, not by this router.
 ## What this skill does NOT do
 
 - It does not write or modify documentation. That is `document-feature`.
-- It does not critique or QA an implementation. That is `exploratory-qa`.
 - It does not bulk-add frontmatter to legacy docs. That is `migrate-project-docs`.
 - It does not run git, search the web, or invoke MCP tools — it is a pure
   read-and-route skill.

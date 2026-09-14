@@ -1,39 +1,76 @@
 # codelore
 
-Four skills that turn project documentation into a context layer AI sessions consult automatically. The loop:
+**Project documentation as a context layer your AI agent consults on its own: write it, index it, and have the right docs loaded before every plan, fix, or investigation.**
 
-- **`document-feature`** — writes and maintains implementation docs with YAML frontmatter (`name`, `description`, `triggers`, `related`) and regenerates `docs/INDEX.md` on every run. Documents the system as it is, never the work that produced it: no migrations, no redesigns, no "this used to be" — with an explicit test for the one hard case, history that reads like a reason.
-- **`migrate-project-docs`** — one-shot bulk migration that adds frontmatter to pre-existing docs and bootstraps `docs/INDEX.md`. Idempotent. Skips anything under `docs/plans/`, `plans/`, or `specs/`.
-- **`consulting-project-docs`** — router that reads `docs/INDEX.md` and pulls only the relevant docs into the agent's context whenever you plan, debug, investigate, or onboard. Silent no-op if no index exists.
-- **`exploratory-qa`** — skeptically reviews **existing code OR an implementation plan**, surfacing non-obvious decisions, unusual implementations, and architectural choices worth discussing. Treats loaded docs as more material to question (including surfacing doc/code drift), never as authority. Resolves purely technical findings itself in the working tree (never commits) and escalates only product-behavior questions to you. Works in two modes:
-  - **Code mode** — review an already-implemented feature, module, or file.
-  - **Plan mode** — pressure-test an implementation plan, spec, design doc, or RFC **before** code is written. Plans are the cheapest place to catch issues.
+[![Version](https://img.shields.io/badge/version-0.6.0-blue)](.claude-plugin/plugin.json)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-cc785c)](#install)
+[![Codex CLI](https://img.shields.io/badge/Codex_CLI-plugin-1f2328)](#install)
 
-Net effect: docs are written → indexed → auto-loaded → critically re-examined on every relevant task — without anyone manually wiring docs into prompts.
+Three skills that turn `docs/` into something an AI session reads at the right moment, without anyone wiring docs into prompts by hand. Part of the [qa-vault](https://github.com/qa-vault/marketplace) plugin family built around [QA Vault](https://qa-vault.com), an MCP-native test-management platform.
 
-This plugin installs natively in both **Claude Code** and **Codex CLI**.
+## What it does
 
-## Contents
+- **Documents the system, not the work.** Implementation docs describe how a feature works and why it was built that way. No migration history, no "this used to be".
+- **Indexes every doc.** Each doc carries YAML frontmatter (`name`, `description`, `triggers`, `related`), and `docs/INDEX.md` is regenerated on every run.
+- **Routes docs into context automatically.** When you plan, debug, investigate, or onboard, the router reads the index and pulls in only the docs that match the task.
+- **Adopts existing docs in one pass.** A one-shot, idempotent migration adds frontmatter to what you already have and bootstraps the index.
 
-- [Install](#install)
-  - [Claude Code](#claude-code)
-  - [Codex CLI](#codex-cli)
-- [Using the skills](#using-the-skills)
-- [License](#license)
+Net effect: docs are written, indexed, and auto-loaded on every relevant task.
 
----
+## Quick start
 
-<img src="https://img.shields.io/badge/Install-2ea043?style=for-the-badge" alt="Install" />
+```
+/plugin marketplace add qa-vault/marketplace
+/plugin install codelore@qa-vault
+```
+
+In a project that already has docs:
+
+```
+/migrate-project-docs
+```
+
+After you implement something:
+
+```
+/document-feature
+```
+
+From then on `consulting-project-docs` loads the relevant docs whenever your prompt is a planning, debugging, or onboarding task. Full steps for both harnesses are under [Install](#install).
+
+## Skills
+
+| Skill | When it runs | What it does |
+|---|---|---|
+| `document-feature` | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" | Writes or updates an implementation doc with frontmatter and regenerates `docs/INDEX.md`. Documents the system as it is; excludes anything under `docs/plans/`, `plans/`, or `specs/`. |
+| `consulting-project-docs` | Before any planning, debugging, investigation, or onboarding task. Usually triggers on its own. | Reads `docs/INDEX.md` and loads only the docs whose `description` or `triggers` match the task. Silent no-op when no index exists. |
+| `migrate-project-docs` | "Set up codelore docs in this project", "Migrate the existing docs" | One-shot bulk migration: adds frontmatter to pre-existing docs and bootstraps the index. Idempotent, skips plan folders, asks before touching ambiguous files. |
+
+### Invoking a skill
+
+Explicit mention is recommended. In Claude Code call the slash command; in Codex type `$` in the composer to open the skill-mention popup:
+
+```
+/document-feature
+$document-feature
+```
+
+Both harnesses also auto-detect a skill when your prompt matches its description.
+
+## How it fits with the other qa-vault plugins
+
+- [`quality-loop`](https://github.com/qa-vault/quality-loop) ships `exploratory-qa`, a skeptical reviewer of plans and code. When a `docs/INDEX.md` exists it loads the relevant docs as more material to question, including doc/code drift.
+- [`qa-vault-skills`](https://github.com/qa-vault/qa-vault-skills) authors and maintains test cases through the QA Vault MCP. Indexed implementation docs give those skills grounded product context.
+
+Neither plugin requires codelore, and codelore requires neither of them.
 
 ## Install
 
-Pick the section matching your AI coding tool.
+`codelore` is distributed through the `qa-vault` marketplace catalog. Installing it is self-contained: no other `qa-vault` plugin is required.
 
-<img src="https://img.shields.io/badge/Claude_Code-cc785c?style=for-the-badge" alt="Claude Code" />
-
-### Claude Code
-
-Claude Code has a built-in plugin system. You add the `qa-vault` marketplace once, then install `codelore` from it.
+<details>
+<summary><strong>Claude Code</strong></summary>
 
 1. **Add the marketplace** (one-time):
 
@@ -41,7 +78,7 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
    /plugin marketplace add qa-vault/marketplace
    ```
 
-   This fetches a catalog of `qa-vault` plugins from GitHub. No code is installed yet.
+   This fetches the catalog of `qa-vault` plugins from GitHub. No code is installed yet. If you already added it for another `qa-vault` plugin, skip this step.
 
 2. **Install the plugin**:
 
@@ -49,22 +86,21 @@ Claude Code has a built-in plugin system. You add the `qa-vault` marketplace onc
    /plugin install codelore@qa-vault
    ```
 
-   Claude Code will ask where to install:
-   - **User** — available in every project on your machine (recommended for personal use)
-   - **Project** — only active when you open this project, and shared with teammates via `.claude/settings.json`
-   - **Local** — only for you, only in this project
+   Claude Code asks where to install:
+   - **User**: available in every project on your machine (recommended for personal use)
+   - **Project**: only active in this project, shared with teammates via `.claude/settings.json`
+   - **Local**: only for you, only in this project
 
-3. **Verify** — type `/` and you should see `/exploratory-qa`, `/document-feature`, `/consulting-project-docs`, and `/migrate-project-docs` in the list (each annotated `(codelore)` so you can tell where they come from).
+3. **Verify**: type `/` and you should see `/document-feature`, `/consulting-project-docs`, and `/migrate-project-docs`, each annotated `(codelore)`.
 
-**Updates:** Claude Code auto-updates installed plugins at startup. Nothing to do on your side.
+**Updates:** Claude Code auto-updates installed plugins at startup.
 
-<img src="https://img.shields.io/badge/Codex_CLI-1f2328?style=for-the-badge" alt="Codex CLI" />
+</details>
 
-### Codex CLI
+<details>
+<summary><strong>Codex CLI</strong></summary>
 
-Codex also has a plugin marketplace system (since March 2026). The install flow mirrors Claude Code's.
-
-> **Requires Codex CLI 0.122+.** The `url` source variant used here shipped in stable 0.122 (2026-04-20). Earlier 0.121.x releases accept only `local` plugin sources and cannot install polyrepo catalogs like this one — upgrade to 0.122 or later.
+> Requires Codex CLI 0.122 or later. The `url` source variant this catalog uses shipped in stable 0.122 (2026-04-20).
 
 1. **Add the marketplace** (one-time):
 
@@ -72,58 +108,22 @@ Codex also has a plugin marketplace system (since March 2026). The install flow 
    codex plugin marketplace add qa-vault/marketplace
    ```
 
-2. **Install the plugin**:
+   If you already added it for another `qa-vault` plugin, skip this step.
 
-   Inside Codex, open the plugin browser:
+2. **Install the plugin**: inside Codex, open the plugin browser:
 
    ```
    /plugins
    ```
 
-   Find `codelore` under the `qa-vault` marketplace and toggle it on to install. (`/plugins` is an interactive browser — it does not accept inline arguments.)
+   Find `codelore` under the `qa-vault` marketplace and toggle it on. `/plugins` is an interactive browser and does not accept inline arguments.
 
-3. **Verify** — type `$` in the Codex composer to open the skill-mention popup; `exploratory-qa`, `document-feature`, `consulting-project-docs`, and `migrate-project-docs` should all be listed. Invoke a skill explicitly with `$<skill-name> <your request>`. As a fallback, Codex will auto-detect a skill when your prompt matches its `description` (see "Using the skills" below for example phrases).
+3. **Verify**: type `$` in the Codex composer to open the skill-mention popup. `document-feature`, `consulting-project-docs`, and `migrate-project-docs` should be listed.
 
-**Updates:** refresh with `codex plugin marketplace upgrade qa-vault` periodically. (Codex's auto-update behavior on launch is not documented as of April 2026, so manual refresh is the reliable path.)
+**Updates:** refresh with `codex plugin marketplace upgrade qa-vault` periodically.
 
----
-
-<img src="https://img.shields.io/badge/Using_the_skills-0969da?style=for-the-badge" alt="Using the skills" />
-
-## Using the skills
-
-Two ways to invoke each skill — explicit is recommended.
-
-**1. Explicit mention (recommended).**
-
-- In **Codex**, type `$` in the composer to open the skill-mention popup, then select the skill and add your request:
-
-  ```
-  $exploratory-qa the notification service
-  $document-feature
-  ```
-
-- In **Claude Code**, call them by slash command:
-
-  ```
-  /exploratory-qa the notification service
-  /document-feature
-  ```
-
-**2. Auto-detect (fallback).** If you don't mention the skill explicitly, both Claude Code and Codex will pick one when your prompt matches the skill's `description`. Useful phrases:
-
-| Skill | Mode | Example prompts |
-|---|---|---|
-| `exploratory-qa` | Code | "Explore the checkout flow", "QA this module critically", "Review src/auth/ with a skeptical eye", "What's non-obvious here?" |
-| `exploratory-qa` | Plan | "QA this plan: plans/rate-limiting.md", "Critique this spec before I implement it", "Review this design doc with a skeptical eye", "What's missing from this RFC?" |
-| `document-feature` | — | "Document what we just implemented", "Write up how the rate limiter works", "Update the docs for the payment module" |
-| `consulting-project-docs` | — | "How does the auth module work?", "Plan a change to the payment flow", "Investigate why the queue is dropping events", "Onboard me onto this codebase" — usually triggers on its own before any planning/debugging task. |
-| `migrate-project-docs` | — | "Set up codelore docs in this project", "Migrate the existing docs", "Add frontmatter to my docs and build the index" — also nudged by `consulting-project-docs` on first run when `docs/INDEX.md` is missing. |
-
----
-
-<img src="https://img.shields.io/badge/License-6e7781?style=for-the-badge" alt="License" />
+</details>
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+Apache-2.0. See [LICENSE](LICENSE).
